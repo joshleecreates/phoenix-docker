@@ -1,0 +1,28 @@
+db:
+  image: "postgres:9.4"
+  ports:
+    - "5432:5432"
+  environment:
+    POSTGRES_USER: api
+    POSTGRES_PASSWORD: postgres
+  volumes_from:
+    - dbdata
+
+dbdata:
+  image: "postgres:9.4"
+  volumes:
+    - /var/lib/postgres
+  command: "true"
+
+web:
+  build: "."
+  environment:
+    MIX_ENV: "dev"
+  ports:
+    - "4000:4000"
+  volumes:
+    - '.:/app'
+    - '/app/deps'
+    - '/app/_build'
+  links:
+    - "db:db"
